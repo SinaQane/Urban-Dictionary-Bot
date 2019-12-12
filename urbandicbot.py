@@ -7,11 +7,17 @@ from uuid import uuid4
 import urllib.request
 import requests
 import telegram
-bot = telegram.Bot(token="TOKEN")
+
+botToken = "TOKEN"
+
+bot = telegram.Bot(token=botToken)
 
 import logging
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+
+userWord = ""
+userDefinition = ""
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
 					level=logging.INFO)
@@ -28,6 +34,11 @@ def help(update, context):
 
 #A scrapping code for getting the "result" meta code on UrbanDictionaty.com and copying it				
 def get_definition(word):
+	global userWord
+	global userDefinition
+	
+	userWord = word
+
 	word.replace(" ", "+")
 	link = "http://www.urbandictionary.com" + "/define.php?term=" + word
 	response = requests.get(link)
@@ -35,10 +46,13 @@ def get_definition(word):
 	if "og:description" in str(soup):
 		for tag in soup.find_all("meta"):
 			if tag.get("property", None) == "og: description":
+				userDefinition = tag.get("content", None)
 				return (tag.get("content", None))
 			if tag.get("property", None) == "og:description":
+				userDefinition = tag.get("content", None)
 				return (tag.get("content", None))
 	elif "Sorry, we couldn't find" in str(soup):
+		userDefinition = "Sorry, we couldn't find: " + word
 		return ("Sorry, we couldn't find: " + word)
 
 #Reply the messages in private conversation
@@ -49,17 +63,21 @@ def definition(update, context):
 	
 #Getting the definition of a word in groups in inline mode, while the bot is added to the group	
 def inlinequery(update, context):
+	global userWord
+	global userDefinition
 	query = update.inline_query.query
 	get_definition(query)
 	results =[ 
 		InlineQueryResultArticle(
 			id=uuid4(),
-			title="Definition",
+			title=userWord,
+			description=userDefinition,
 			input_message_content=InputTextMessageContent(
-				query.lower())),
+				message_text=userDefinition))
 			]
 	
 	update.inline_query.answer(results)
+
 
 
 def error(update, context):
@@ -68,7 +86,7 @@ def error(update, context):
 
 def main():
 
-	updater = Updater("TOKEN", use_context=True)
+	updater = Updater(botToken, use_context=True)
 
 	dp = updater.dispatcher
 

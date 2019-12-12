@@ -8,7 +8,7 @@ It can reply messages in private conversation with the bot, and use inline mode 
 ## Setup
 First install requirements
 ```python
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 Then just change the `TOKEN` with your robot token and run it. 
 

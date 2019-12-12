@@ -10,7 +10,7 @@ import telegram
 import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
-botToken = "TOKEN"
+botToken = "1019017482:AAH0EUgWUaEUVqRaSlI1NycKNFAjTIpsj4A"
 
 bot = telegram.Bot(token=botToken)
 

@@ -12,3 +12,9 @@ pip install requirements.txt
 ```
 Then just change the `TOKEN` with your robot token and run it. 
 
+## Usage
+You can test my bot at: https://t.me/Urban_dic_bot
+Use it as inline bot in private chats or groups by calling ID of bot:
+```python
+@Urban_dic_bot Example
+```
